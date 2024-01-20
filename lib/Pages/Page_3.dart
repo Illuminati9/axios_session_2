@@ -25,11 +25,15 @@ class Page3 extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image.network(
-              imageUrl,
-              width: 300,
-              height: 300,
-            ),
+            imageUrl != 'N/A'
+                ? Image.network(
+                    imageUrl,
+                    width: MediaQuery.of(context).size.width / 5,
+                  )
+                : Image.asset(
+                    'assets/smiley.jpg',
+                    width: MediaQuery.of(context).size.width / 5,
+                  ),
             const SizedBox(
               height: 30,
             ),
@@ -46,12 +50,13 @@ class Page3 extends StatelessWidget {
                 ),
                 Expanded(child: Text(title))
               ],
-            ),Row(
+            ),
+            Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(
                   width: MediaQuery.of(context).size.width / 2,
-                  child:const Text(
+                  child: const Text(
                     'Year :',
                     textAlign: TextAlign.end,
                     style: TextStyle(fontWeight: FontWeight.bold),
@@ -79,7 +84,7 @@ class Page3 extends StatelessWidget {
               children: [
                 SizedBox(
                   width: MediaQuery.of(context).size.width / 2,
-                  child:const Text(
+                  child: const Text(
                     'Genre :',
                     textAlign: TextAlign.end,
                     style: TextStyle(fontWeight: FontWeight.bold),
