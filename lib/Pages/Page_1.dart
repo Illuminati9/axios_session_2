@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:axios_2/Pages/Page_2.dart';
-import 'package:axios_2/models/movie_class.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -16,8 +15,11 @@ class _Page1State extends State<Page1> {
   final TextEditingController _textFieldController = TextEditingController();
   String fetchedData = '';
   Future<void> fetchData() async {
+    setState(() {
+      isLoading = true;
+    });
     String baseUrl =
-        "https://www.omdbapi.com/?s=${_textFieldController.text}&apikey=73e19683";
+        "https://www.omdbapi.com/?t=${_textFieldController.text}&apikey=73e19683";
 
     var url = Uri.parse(baseUrl);
     var response = await http.get(url);
@@ -34,15 +36,17 @@ class _Page1State extends State<Page1> {
             ),
           );
         } else {
-          print(responseBody['Search'][0]['Title'].toString());
-          List<MovieClass> movies =
-              MovieClass.fromJsonList(responseBody['Search']);
+          var movie = responseBody;
           Navigator.of(context).push(
             MaterialPageRoute(
               builder: (context) {
                 return Page2(
-                  list: movies,
-                );
+                    imageUrl: movie['Poster'],
+                    title: movie['Title'],
+                    year: movie['Year'],
+                    releasedDate: movie['Released'],
+                    genre: movie['Genre'],
+                    actors: movie['Actors']);
               },
             ),
           );
@@ -55,13 +59,16 @@ class _Page1State extends State<Page1> {
         );
       }
     }
+    setState(() {
+      isLoading = false;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color.fromARGB(255, 247, 201, 62),
+        backgroundColor: Colors.amber,
         centerTitle: true,
         title: Text('Axios_session : 2'),
       ),
@@ -88,19 +95,15 @@ class _Page1State extends State<Page1> {
             const SizedBox(height: 20),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                primary: Color.fromARGB(255, 247, 201, 62),
-                onPrimary: Colors.white,
+                backgroundColor: Colors.amber,
+                foregroundColor: Colors.white,
               ),
               onPressed: () {
-                setState(() {
-                  isLoading = true;
-                });
                 fetchData();
-                setState(() {
-                  isLoading = false;
-                });
               },
-              child: isLoading ? const CircularProgressIndicator() : const Text('Fetch Data'),
+              child: isLoading
+                  ? const CircularProgressIndicator(color: Colors.white)
+                  : const Text('Fetch Data'),
             ),
           ],
         ),

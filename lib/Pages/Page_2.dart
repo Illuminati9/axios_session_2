@@ -1,94 +1,113 @@
-import 'dart:convert';
-
-import 'package:axios_2/Pages/Page_3.dart';
-import 'package:axios_2/models/movie_class.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 
-class Page2 extends StatefulWidget {
-  const Page2({required this.list, super.key});
+class Page2 extends StatelessWidget {
+  final String title, imageUrl, year, releasedDate, genre, actors;
 
-  final List<MovieClass> list;
-
-  @override
-  State<Page2> createState() => _Page2State();
-}
-
-class _Page2State extends State<Page2> {
-  Future<void> fetchMovieData(int index) async {
-    String baseUrl =
-        "https://www.omdbapi.com/?t=${widget.list[index].title}&y=${widget.list[index].year}&apikey=73e19683";
-
-    var url = Uri.parse(baseUrl);
-    var response = await http.get(url);
-    print(response.statusCode);
-
-    if (response.statusCode == 200) {
-      if (response.body.isNotEmpty) {
-        var responseBody = jsonDecode(response.body);
-
-        if (responseBody['Response'] == "False") {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text("Movie Data not found"),
-            ),
-          );
-        } else {
-          print(responseBody['Title'].toString());
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) {
-                return Page3(
-                  title: responseBody['Title'],
-                  imageUrl: responseBody['Poster'],
-                  year: responseBody['Year'],
-                  releasedDate: responseBody['Released'],
-                  genre: responseBody['Genre'],
-                  actors: responseBody['Actors'],
-                );
-              },
-            ),
-          );
-        }
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text("Movie Data not found"),
-          ),
-        );
-      }
-    }
-  }
+  const Page2(
+      {Key? key,
+      required this.imageUrl,
+      required this.title,
+      required this.year,
+      required this.releasedDate,
+      required this.genre,
+      required this.actors})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Movie Details'),
         centerTitle: true,
+        title: Text('$title'),
         backgroundColor: Colors.amber,
       ),
-      backgroundColor: Colors.white,
-      body: ListView.builder(
-        itemCount: widget.list.length,
-        itemBuilder: (context, index) => InkWell(
-          onTap: () {
-            fetchMovieData(index);
-          },
-          child: ListTile(
-            leading: widget.list[index].poster != 'N/A'
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            imageUrl != 'N/A'
                 ? Image.network(
-                    widget.list[index].poster!,
-                    width: MediaQuery.of(context).size.width / 5,
+                    imageUrl,
+                    width: MediaQuery.of(context).size.width / 2,
                   )
                 : Image.asset(
                     'assets/smiley.jpg',
-                    width: MediaQuery.of(context).size.width / 5,
+                    width: MediaQuery.of(context).size.width / 2,
                   ),
-            title: Text(widget.list[index].title!),
-            subtitle: Text(widget.list[index].year!),
-            trailing: Text(widget.list[index].type!),
-          ),
+            const SizedBox(
+              height: 30,
+            ),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  width: MediaQuery.of(context).size.width / 2,
+                  child: const Text(
+                    'Movie Title :',
+                    textAlign: TextAlign.end,
+                    style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20),
+                  ),
+                ),
+                Expanded(child: Text(title,style: TextStyle(fontSize: 20),))
+              ],
+            ),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  width: MediaQuery.of(context).size.width / 2,
+                  child: const Text(
+                    'Year :',
+                    textAlign: TextAlign.end,
+                    style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20),
+                  ),
+                ),
+                Expanded(child: Text(year,style: TextStyle(fontSize: 20),))
+              ],
+            ),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  width: MediaQuery.of(context).size.width / 2,
+                  child: const Text(
+                    'Released Date:',
+                    textAlign: TextAlign.end,
+                    style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20),
+                  ),
+                ),
+                Expanded(child: Text(releasedDate,style: TextStyle(fontSize: 20),))
+              ],
+            ),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  width: MediaQuery.of(context).size.width / 2,
+                  child: const Text(
+                    'Genre :',
+                    textAlign: TextAlign.end,
+                    style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20),
+                  ),
+                ),
+                Expanded(child: Text(genre,style: TextStyle(fontSize: 20),),)
+              ],
+            ),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  width: MediaQuery.of(context).size.width / 2,
+                  child: const Text(
+                    'Actors :',
+                    textAlign: TextAlign.end,
+                    style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20),
+                  ),
+                ),
+                Expanded(child: Text(actors,style: TextStyle(fontSize: 20),))
+              ],
+            ),
+          ],
         ),
       ),
     );
