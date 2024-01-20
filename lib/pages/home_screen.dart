@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:axios_2/Pages/Page_2.dart';
+import 'package:axios_2/pages/movie_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
