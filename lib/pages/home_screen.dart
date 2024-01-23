@@ -23,7 +23,42 @@ class _Page1State extends State<Page1> {
 
     var url = Uri.parse(baseUrl);
     var response = await http.get(url);
-    
+    print(response.statusCode);
+
+    if (response.statusCode == 200) {
+      if (response.body.isNotEmpty) {
+        var responseBody = jsonDecode(response.body);
+
+        if (responseBody['Response'] == "False") {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text("Error:- Not found any data !"),
+            ),
+          );
+        } else {
+          var movie = responseBody;
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) {
+                return Page2(
+                    imageUrl: movie['Poster'],
+                    title: movie['Title'],
+                    year: movie['Year'],
+                    releasedDate: movie['Released'],
+                    genre: movie['Genre'],
+                    actors: movie['Actors']);
+              },
+            ),
+          );
+        }
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Something went wrong"),
+          ),
+        );
+      }
+    }
     setState(() {
       isLoading = false;
     });
